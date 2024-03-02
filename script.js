@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         Ecrit-
-// @namespace    http://tampermonkey.net/
+// @namespace    https://github.com/Pilgrimeru/ecrit-/tree/main
 // @version      1.0
 // @description  Ajoute l'explication sous la question dans les tests ecriplus
 // @author       Elliott DE LUCA
 // @match        https://app.tests.ecriplus.fr/*
 // @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png
-// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.js
-// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.js
+// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js
+// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js
 // @grant        GM_addElement
 // ==/UserScript==
 
