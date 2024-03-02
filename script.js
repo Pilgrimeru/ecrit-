@@ -6,8 +6,8 @@
 // @author       Elliott DE LUCA
 // @match        https://app.tests.ecriplus.fr/*
 // @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png
-// @updateURL    https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer.user.js
-// @downloadURL  https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer.user.js
+// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.js
+// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.js
 // @grant        GM_addElement
 // ==/UserScript==
 
