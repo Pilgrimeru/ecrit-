@@ -1,6 +1,6 @@
 # Ecrit-
 
-![Logo](https://www.google.com/s2/favicons?sz=64&domain=ecriplus.fr)
+![Logo](https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png)
 
 ## Description
 
@@ -9,7 +9,7 @@ Ce script utilisateur (UserScript) Tampermonkey ajoute une fonctionnalité suppl
 ## Installation
 
 1. Assurez-vous d'avoir [Tampermonkey](https://www.tampermonkey.net/) installé dans votre navigateur.
-2. Cliquez sur ce [lien d'installation](#) pour installer le script automatiquement.
+2. Cliquez sur ce [lien d'installation](https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.js) pour installer le script automatiquement.
 
 ## Utilisation
 

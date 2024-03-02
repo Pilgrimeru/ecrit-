@@ -5,7 +5,9 @@
 // @description  Ajoute l'explication sous la question dans les tests ecriplus
 // @author       Elliott DE LUCA
 // @match        https://app.tests.ecriplus.fr/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=ecriplus.fr
+// @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png
+// @updateURL    https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer.user.js
+// @downloadURL  https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer.user.js
 // @grant        GM_addElement
 // ==/UserScript==
 
