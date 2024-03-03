@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Ecrit- V2
+// @name         Ecrit- gost
 // @namespace    https://github.com/Pilgrimeru/ecrit-/tree/main
-// @version      1.0
+// @version      2.0
 // @description  Ajoute l'explication sous la question dans les tests ecriplus
 // @author       Elliott DE LUCA | FIEVET LEON
 // @match        https://app.tests.ecriplus.fr/*
@@ -32,7 +32,7 @@ let explicationElement;
                         let text = reader.result;
                         let json = JSON.parse(text);
                         const explication = json.data.attributes.explication;
-                        displayExplication(explication);
+                        displayExplication(explication, json.data, json.data.attributes.type);
                     };
                     reader.readAsText(this.response);
                 }
@@ -47,11 +47,14 @@ let explicationElement;
  * Si une explication est déjà affichée, elle supprime celle qui existe avant d'ajouter la nouvelle explication.
  * L'explication est montrée dans un élément div stylisé qui inclut une image et le texte de l'explication.
  * @param {string} explication - La chaîne HTML contenant l'explication à afficher.
+ * @param currentQuestionData
+ * @param type
  */
-function displayExplication(explication) {
+function displayExplication(explication, currentQuestionData, type) {
     if (explicationElement) {
         document.body.removeChild(explicationElement);
     }
+
 
     if (explication) {
         explicationElement = document.createElement('div');
@@ -93,8 +96,83 @@ function displayExplication(explication) {
             explicationElement.style.visibility = 'hidden';
         };
 
+        hoverButton.onclick = function() {
+            copyPromptToClipboard(explication, currentQuestionData, type);
+        };
+
         document.body.appendChild(explicationElement);
         document.body.appendChild(hoverButton);
     }
 }
 
+function generatePrompt(questionData, type) {
+    // Extraction directe sans nettoyage HTML
+    let question = questionData.attributes.instruction;
+    let explicationText = questionData.attributes.explication;
+    let prompt = `Question: ${question}\n`;
+    let reponsesPossibles = questionData.attributes.proposals;
+
+    if (type === "QROCM-ind") {
+        console.log("QROCM-ind");
+        prompt += extractAndFormatMultipleChoices(reponsesPossibles);
+    } else if (type === "QCU" || type === "QCM") {
+        console.log("QCU or QCM");
+        prompt += formatChoices(reponsesPossibles);
+    }
+
+    prompt += `\nExplication: ${explicationText}\n`;
+
+    // Ajout de la consigne pour répondre à la question
+    prompt += '\nRépond à la question grâce à l explication, met en gras les mots que tu as choisis';
+
+    // Nettoyage final de tout le prompt
+    prompt = removeHtmlTags(prompt).replace(/&nbsp;/g, ' ');
+
+    return prompt;
+}
+
+
+function extractAndFormatMultipleChoices(choicesString) {
+    let cleanString = removeHtmlTags(choicesString).replace(/&nbsp;/g, ' ').replace(/<br>/g, '');
+
+    const regex = /\$\{(fakeid\d)¦(.*?)\}/g;
+    let placeholders = [...cleanString.matchAll(regex)];
+    let formattedText = cleanString;
+
+    placeholders.forEach((placeholder, index) => {
+        formattedText = formattedText.replace(placeholder[0], `______ (${index + 1})`);
+        const choices = placeholder[2].split('¦').map(choice => choice.trim()).join(' / ');
+        formattedText += `\nChoix ${index + 1}: ${choices}`;
+    });
+
+    return formattedText;
+}
+
+
+function formatChoices(choicesString) {
+    const choices = choicesString.split('\n').filter(choice => choice.trim() !== '');
+    let formattedChoices = '';
+
+    choices.forEach((choice, index) => {
+        const cleanChoice = removeHtmlTags(choice).trim();
+        if (cleanChoice) {
+            formattedChoices += `${index + 1}. ${cleanChoice}\n`;
+        }
+    });
+
+    return formattedChoices.trim();
+}
+
+
+function removeHtmlTags(text) {
+    return text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+}
+
+function copyPromptToClipboard(explication, currentQuestionData, type) {
+    let prompt = generatePrompt(currentQuestionData, type);
+    navigator.clipboard.writeText(prompt).then(() => {
+        console.log('Prompt copié dans le presse-papiers');
+    }).catch(err => {
+        console.error('Erreur lors de la copie du prompt:', err);
+    });
+}

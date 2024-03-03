@@ -1,66 +1,50 @@
 // ==UserScript==
-// @name         Ecrit- V1
-// @namespace    https://github.com/Pilgrimeru/ecrit-/tree/main
-// @version      1.0
-// @description  Ajoute l'explication sous la question dans les tests ecriplus
+// @name         Ecrit-
+// @namespace    https://github.com/Pilgrimeru/ecrit+/tree/main
+// @version      2.0
+// @description  Ajoute l'explication sous la question dans les tests ecriplus pour QROCM-ind, QCU, et QCM
 // @author       Elliott DE LUCA
 // @match        https://app.tests.ecriplus.fr/*
-// @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png
-// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js
-// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js
+// @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit+/main/ecritmoins.png
+// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit+/main/script.user.js
+// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit+/main/script.user.js
 // @grant        GM_addElement
 // ==/UserScript==
 
 const pattern = /https:\/\/api\.tests\.ecriplus\.fr\/api\/assessments\/(\d+)\/next/;
 let explicationElement;
 
-/**
- * Cette IIFE remplace la méthode `open` de XMLHttpRequest pour écouter les changements d'état de la requête.
- * Elle recherche spécifiquement les requêtes correspondant à un schéma indiquant une récupération de question d'évaluation.
- * Lors d'une récupération réussie, elle lit la réponse, extrait l'explication du JSON,
- * et appelle displayExplication pour l'afficher sur la page.
- * @param {Function} open - La fonction `open` originale de XMLHttpRequest.
- */
 (function (open) {
     XMLHttpRequest.prototype.open = function () {
         this.addEventListener("readystatechange", function () {
-            if (this.readyState === 4) {
-                if (pattern.test(this.responseURL)) {
-                    let reader = new FileReader();
-
-                    reader.onload = function () {
-                        let text = reader.result;
-                        let json = JSON.parse(text);
-                        const explication = json.data.attributes.explication;
-                        displayExplication(explication);
-                    };
-                    reader.readAsText(this.response);
-                }
+            if (this.readyState === 4 && pattern.test(this.responseURL)) {
+                let reader = new FileReader();
+                reader.onload = function () {
+                    const response = JSON.parse(reader.result);
+                    if (response.data && response.data.attributes) {
+                        const { explication, type } = response.data.attributes;
+                        const currentQuestionData = response.data;
+                        displayExplication(explication, currentQuestionData, type);
+                    }
+                };
+                reader.readAsText(this.response);
             }
         }, false);
         open.apply(this, arguments);
     };
 })(XMLHttpRequest.prototype.open);
 
-/**
- * Affiche l'explication d'une question d'évaluation.
- * Si une explication est déjà affichée, elle supprime celle qui existe avant d'ajouter la nouvelle explication.
- * L'explication est montrée dans un élément div stylisé qui inclut une image et le texte de l'explication.
- * @param {string} explication - La chaîne HTML contenant l'explication à afficher.
- */
-function displayExplication(explication) {
+function displayExplication(explication, currentQuestionData, type) {
     if (explicationElement) {
         document.body.removeChild(explicationElement);
     }
 
     if (explication) {
-        // Crée un nouvel élément pour afficher l'explication
         explicationElement = document.createElement('div');
         explicationElement.style.maxWidth = '990px';
         explicationElement.style.margin = 'auto';
         explicationElement.className = "tutorial-panel__explication-container-body tutorial-panel__explication-content";
-        
-        // Crée et ajoute le conteneur d'image avec une image
+
         let pictoContainer = document.createElement('div');
         pictoContainer.className = "tutorial-panel__explication-picto-container";
         let pictoImage = document.createElement('img');
@@ -68,15 +52,88 @@ function displayExplication(explication) {
         pictoImage.alt = "lampe_verte";
         pictoImage.className = "tutorial-panel__explication-picto";
         pictoContainer.appendChild(pictoImage);
-        
-        // Crée et ajoute le span qui contient l'explication
+
         let textSpanContainer = document.createElement('span');
         let textSpan = document.createElement('span');
         textSpan.innerHTML = explication;
         textSpanContainer.appendChild(textSpan);
-        
+
         explicationElement.appendChild(pictoContainer);
         explicationElement.appendChild(textSpanContainer);
         document.body.appendChild(explicationElement);
+
+        explicationElement.addEventListener('click', function() {
+            let prompt = generatePrompt(currentQuestionData, type);
+            navigator.clipboard.writeText(prompt).then(() => {
+                console.log('Prompt copié dans le presse-papiers');
+            }).catch(err => {
+                console.error('Erreur lors de la copie du prompt:', err);
+            });
+        });
     }
 }
+
+function generatePrompt(questionData, type) {
+    // Extraction directe sans nettoyage HTML
+    let question = questionData.attributes.instruction;
+    let explicationText = questionData.attributes.explication;
+    let prompt = `Question: ${question}\n`;
+    let reponsesPossibles = questionData.attributes.proposals;
+
+    if (type === "QROCM-ind") {
+        console.log("QROCM-ind");
+        prompt += extractAndFormatMultipleChoices(reponsesPossibles);
+    } else if (type === "QCU" || type === "QCM") {
+        console.log("QCU or QCM");
+        prompt += formatChoices(reponsesPossibles);
+    }
+
+    prompt += `\nExplication: ${explicationText}\n`;
+
+    // Ajout de la consigne pour répondre à la question
+    prompt += '\nRépond à la question grâce à l explication, met en gras les mots que tu as choisis';
+
+    // Nettoyage final de tout le prompt
+    prompt = removeHtmlTags(prompt).replace(/&nbsp;/g, ' ');
+
+    return prompt;
+}
+
+
+function extractAndFormatMultipleChoices(choicesString) {
+    let cleanString = removeHtmlTags(choicesString).replace(/&nbsp;/g, ' ').replace(/<br>/g, '');
+
+    const regex = /\$\{(fakeid\d)¦(.*?)\}/g;
+    let placeholders = [...cleanString.matchAll(regex)];
+    let formattedText = cleanString;
+
+    placeholders.forEach((placeholder, index) => {
+        formattedText = formattedText.replace(placeholder[0], `______ (${index + 1})`);
+        const choices = placeholder[2].split('¦').map(choice => choice.trim()).join(' / ');
+        formattedText += `\nChoix ${index + 1}: ${choices}`;
+    });
+
+    return formattedText;
+}
+
+
+function formatChoices(choicesString) {
+    const choices = choicesString.split('\n').filter(choice => choice.trim() !== '');
+    let formattedChoices = '';
+
+    choices.forEach((choice, index) => {
+        const cleanChoice = removeHtmlTags(choice).trim();
+        if (cleanChoice) {
+            formattedChoices += `${index + 1}. ${cleanChoice}\n`;
+        }
+    });
+
+    return formattedChoices.trim();
+}
+
+
+function removeHtmlTags(text) {
+    return text.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+}
+
+
