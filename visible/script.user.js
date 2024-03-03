@@ -5,9 +5,9 @@
 // @description  Ajoute l'explication sous la question dans les tests ecriplus pour QROCM-ind, QCU, et QCM
 // @author       Elliott DE LUCA
 // @match        https://app.tests.ecriplus.fr/*
-// @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit+/main/ecritmoins.png
-// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit+/main/script.user.js
-// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit+/main/script.user.js
+// @icon         https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png
+// @updateURL    https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js
+// @downloadURL  https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js
 // @grant        GM_addElement
 // ==/UserScript==
 
