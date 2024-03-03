@@ -6,14 +6,37 @@
 
 Ce script utilisateur (UserScript) Tampermonkey ajoute une fonctionnalité supplémentaire à l'interface des tests sur le site ecriplus.fr. Il affiche l'explication sous la question dans les tests, facilitant ainsi la compréhension des réponses.
 
-## Installation
+Pour structurer votre guide d'installation de manière à gérer deux scripts distincts, un dans un dossier "visible" et un autre dans un dossier "invisible", voici une manière organisée de présenter ces instructions :
 
-1. Assurez-vous d'avoir [Tampermonkey](https://www.tampermonkey.net/) installé dans votre navigateur.
-2. Cliquez sur ce [lien d'installation](https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/script.user.js) pour installer le script automatiquement.
+---
 
-## Utilisation
+### Instructions d'Installation des Scripts pour Tampermonkey
 
-Une fois le script installé, il fonctionnera automatiquement chaque fois que vous vous rendrez sur une page de test sur ecriplus.fr. L'explication sera affichée sous chaque question dès qu'elle sera récupérée depuis le serveur.
+Pour utiliser ces scripts, vous devez d'abord avoir l'extension Tampermonkey installée dans votre navigateur. Si ce n'est pas encore le cas, suivez le lien ci-dessous pour l'installer :
+
+- [Installer Tampermonkey](https://www.tampermonkey.net/)
+
+Une fois Tampermonkey installé, vous pouvez procéder à l'installation des scripts.
+
+#### Script Visible
+
+Ce script affiche directement l'explication sur la page.
+
+1. **Installation** : Cliquez sur le lien suivant pour installer automatiquement le script visible :
+    - [Installer le Script Visible](https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/visible/script.user.js)
+
+#### Script Invisible
+
+Ce script cache l'explication et ne l'affiche que lorsque la souris survole le coin supérieur droit de la page.
+
+1. **Installation** : Cliquez sur le lien suivant pour installer automatiquement le script invisible :
+    - [Installer le Script Invisible](https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/invisible/script.user.js)
+
+### Utilisation
+
+Après l'installation, le script choisi fonctionnera automatiquement sur les pages spécifiées dans le script. Pour le script "invisible", survolez simplement le coin supérieur droit de la page pour voir l'explication s'afficher.
+
+Si vous souhaitez changer de script à l'avenir, assurez-vous de désactiver ou de supprimer le script précédent dans le tableau de bord Tampermonkey avant d'installer un nouveau script.
 
 ## Crédits
 

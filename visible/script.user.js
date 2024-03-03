@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Ecrit-
+// @name         Ecrit- V1
 // @namespace    https://github.com/Pilgrimeru/ecrit-/tree/main
 // @version      1.0
 // @description  Ajoute l'explication sous la question dans les tests ecriplus
