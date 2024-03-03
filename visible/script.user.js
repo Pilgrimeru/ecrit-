@@ -82,18 +82,22 @@ function generatePrompt(questionData, type) {
 
     if (type === "QROCM-ind") {
         console.log("QROCM-ind");
-        prompt += extractAndFormatMultipleChoices(reponsesPossibles);
+        prompt += 'Sujet: ' + extractAndFormatMultipleChoices(reponsesPossibles);
     } else if (type === "QCU" || type === "QCM") {
         console.log("QCU or QCM");
-        prompt += formatChoices(reponsesPossibles);
+        prompt += 'Sujet: ' + formatChoices(reponsesPossibles);
+    } else if (type === "CATEG") {
+        console.log("CATEG");
+        prompt += extractAndFormatCategories(reponsesPossibles);
     }
 
     prompt += `\nExplication: ${explicationText}\n`;
+    if (type === "CATEG") {
+        prompt += '\nClasse les options dans les catégories en te servant de l explication';
+    } else {
+        prompt += '\nRépond à la question grâce à l explication, met en gras les mots que tu as choisis';
+    }
 
-    // Ajout de la consigne pour répondre à la question
-    prompt += '\nRépond à la question grâce à l explication, met en gras les mots que tu as choisis';
-
-    // Nettoyage final de tout le prompt
     prompt = removeHtmlTags(prompt).replace(/&nbsp;/g, ' ');
 
     return prompt;
@@ -129,6 +133,23 @@ function formatChoices(choicesString) {
     });
 
     return formattedChoices.trim();
+}
+
+function extractAndFormatCategories(categoriesString) {
+    const options = categoriesString.split('\n--\n').map(optionGroup => {
+        return removeHtmlTags(optionGroup).trim();
+    }).filter(optionGroup => optionGroup);
+
+    let formattedCategories = '';
+    options.forEach((option, index) => {
+        if (index === 0) {
+            formattedCategories += `Categories: ${option}\n`;
+        } else {
+            formattedCategories += `Option : ${option.split('\n-').join(' / ').trim()}\n`;
+        }
+    });
+
+    return formattedCategories.trim();
 }
 
 
