@@ -120,6 +120,8 @@ function generatePrompt(questionData, type) {
     }else if (type === "CATEG") {
         console.log("CATEG");
         prompt += extractAndFormatCategories(reponsesPossibles);
+    } else if (type === "QROC") {
+        console.log("QROC");
     }
 
     prompt += `\nExplication: ${explicationText}\n`;
