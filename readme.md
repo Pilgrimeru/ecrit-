@@ -1,7 +1,3 @@
-Pour intégrer la fonction de copie dans le guide d'installation dans votre README, en expliquant comment utiliser cette fonctionnalité avec les deux versions du script (visible et invisible), voici une manière organisée de présenter ces instructions :
-
----
-
 # Ecrit-
 
 ![Logo](https://raw.githubusercontent.com/Pilgrimeru/ecrit-/main/ecritmoins.png)
